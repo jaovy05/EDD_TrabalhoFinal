@@ -16,6 +16,11 @@ void incluir(Raiz* raiz)
     }
     printf("Duracao: (hh:mm)");
     scanf("%d:%d", &novo->duracaoh, &novo->duracaom);
+    if((novo->duracaoh < 0 || novo->duracaoh >= 24) || (novo->duracaom < 0) || novo->duracaom > 60){
+        printf("Duração invalida. \n");
+        free(novo);
+        return;
+    }
     printf("Descricao: \n");
     scanf(" %[^\n]", novo->descricao);
     transformador(novo);
@@ -60,6 +65,7 @@ void consultar(Raiz* raiz)
     procurador->left = NULL;
     procurador->right = NULL;
     procurador->data = setdata(tipobusca);
+    if(procurador->data.ano == -1) return;
     if(tipobusca == 1){
         procurador->duracaoh = 23;
         procurador->duracaom = 59;
@@ -89,6 +95,7 @@ void alterar(Evento* raiz)
     procurador->left = NULL;
     procurador->right = NULL;
     procurador->data = setdata(2);
+    if(procurador->data.ano == -1) return;
     procurador->duracaoh = 0;
     procurador->duracaom = 0;
     transformador(procurador);
@@ -122,6 +129,7 @@ void excluir(Raiz* raiz)
     procurador->left = NULL;
     procurador->right = NULL;
     procurador->data = setdata(2);
+    if(procurador->data.ano == -1) return;
     procurador->duracaoh = 0;
     procurador->duracaom = 0;
     transformador(procurador);
@@ -202,7 +210,8 @@ int confData(Data data)
 {
     if(data.minutos >= 60 || data.minutos < 0) return -1;
     else if(data.horas >= 24 || data.horas < 0) return -1;
-    else if(data.dia > diasnoMes(data.mes, data.ano)) return -1;
+    else if(data.dia > diasnoMes(data.mes, data.ano) || data.dia < 1) return -1;
+    else if(data.ano < 0) return -1;
     else
         return 0;
 }
@@ -245,17 +254,24 @@ Evento* adubo(Evento* raiz, Evento* broto)
 Data setdata(int tipo)
 {
     Data d;
-    if(tipo == 2){
+    if (tipo == 2) {
         printf("Data: (dd/mm/aaaa)");
         scanf("%d/%d/%lld", &d.dia, &d.mes, &d.ano);
         printf("Hora: (hh:mm)");
-        scanf("%d:%d", &d.horas, &d.minutos);
-    }
-     if(tipo == 1){
+        scanf("%d:%d", &d.horas, &d.minutos); }
+    else if (tipo == 1) { 
         printf("Data: (dd/mm/aaaa)");
         scanf("%d/%d/%lld", &d.dia, &d.mes, &d.ano);
         d.horas = 0;
-        d.minutos = 0;
+        d.minutos = 0; 
+        }
+    else  {
+        printf("Tipo invalido, digite 1 ou 2\n");
+        d.ano = -1;
+    }
+    if (confData(d) == -1) {
+        printf("Data invalida.\n");
+        d.ano = -1;
     }
     return d;
 }
