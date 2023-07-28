@@ -14,7 +14,7 @@ void incluir(Raiz* raiz)
         free(novo);
         return;
     }
-    printf("Duracao: (hh:mm)");
+    printf("Duracao (hh:mm): ");
     scanf("%d:%d", &novo->duracaoh, &novo->duracaom);
     if((novo->duracaoh < 0 || novo->duracaoh >= 24) || (novo->duracaom < 0) || novo->duracaom > 60){
         printf("Duração invalida. \n");
@@ -108,7 +108,8 @@ void alterar(Evento* raiz)
         char backupDescricao[100];
         long long int backupFim = encontrado->fim;
         strcpy(backupDescricao, encontrado->descricao); 
-        printf("Duracao: (hh:mm)");
+        printf("Altere o evento\n");
+        printf("Duracao (hh:mm): ");
         scanf("%d:%d", &encontrado->duracaoh, &encontrado->duracaom);
         printf("Descricao: ");
         scanf(" %[^\n]", encontrado->descricao);
@@ -189,10 +190,12 @@ void transformador(Evento* raiz)
         data.minutos = raiz->duracaom + data.minutos -60;
         data.horas++;
     }  else data.minutos += raiz->duracaom;
-    if (raiz->duracaoh + data.horas >= 24) {
-        data.horas = raiz->duracaoh + data.horas -24;
-        data.dia++;
-    }  else data.horas += raiz->duracaoh;
+    if (raiz->duracaoh + data.horas < 24) data.horas += raiz->duracaoh;
+    else {
+        while(raiz->duracaoh + data.horas >= 24) {
+            data.horas = raiz->duracaoh + data.horas -24;
+            data.dia++;
+        }} 
     
     if (data.dia > diasNoMes) {
         data.dia = 1;
@@ -255,12 +258,12 @@ Data setdata(int tipo)
 {
     Data d;
     if (tipo == 2) {
-        printf("Data: (dd/mm/aaaa)");
+        printf("Data (dd/mm/aaaa): ");
         scanf("%d/%d/%lld", &d.dia, &d.mes, &d.ano);
-        printf("Hora: (hh:mm)");
+        printf("Hora (hh:mm): ");
         scanf("%d:%d", &d.horas, &d.minutos); }
     else if (tipo == 1) { 
-        printf("Data: (dd/mm/aaaa)");
+        printf("Data (dd/mm/aaaa): ");
         scanf("%d/%d/%lld", &d.dia, &d.mes, &d.ano);
         d.horas = 0;
         d.minutos = 0; 
